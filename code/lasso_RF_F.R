@@ -1,3 +1,5 @@
+#run on fibroblasts
+
 library(glmnet)
 library(pROC)
 library(dplyr)
@@ -14,8 +16,6 @@ registerDoParallel()
 getDoParWorkers()
 
 system.time( foreach(i=1:10000) %dopar% sum(tanh(1:i)) )
-
-set.seed(405)
 
 
 set.seed(405)
@@ -35,7 +35,7 @@ df<-f_DF
 
 df$Y<-resp$MRSS
 
-
+#remove highly correlated data
 cormat<-cor(df[,1:length(df)-1])
 
 highlyCorrelated <- findCorrelation(cormat, cutoff=0.95)
