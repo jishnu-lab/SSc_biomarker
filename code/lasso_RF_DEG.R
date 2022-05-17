@@ -1,3 +1,6 @@
+#RUN pipeline on DEGs
+
+
 library(glmnet)
 library(pROC)
 library(dplyr)
@@ -32,12 +35,12 @@ DEG.df$Y<-Y
 DEG.Var.df$Y<-Y
 
 
-## 
+#remove highly correlated data
 cormatDEG<-cor(DEG.df[,1:length(DEG.df)-1])
 
 highlyCorrelated <- findCorrelation(cormatDEG, cutoff=0.85)
 
-
+#manually remove neural
 DEG.df<-DEG.df %>% select(-contains("c.14"))
 
 
@@ -261,97 +264,6 @@ degBP<-ggplot(DEG, aes(group,corr,color=group))+geom_boxplot()+expand_limits(y=c
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.title = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 ggsave('DEGBP.pdf',degBP,device="pdf",dpi=500)
-
-
-
-#EACH MODEL BOX PLOT
-#Change reps to 20
-#Include permute
-
-#one slide with boxplots comp
-# one dot plot
-# one selected features
-# shuffle y with respect to x
-
-
-
-
-
-
-
-#plsr
-
-set.seed(405)
-
-freq = sort(table(variablesSaved),decreasing=TRUE)/(k*10*10)
-print(freq)
-
-stable_Var = names(which(freq>0.4))
-
-
-Svars <- paste(stable_Var, collapse="+")
-formPLS<-as.formula(paste("Y ~ ",Svars,sep = ""))
-
-
-
-modPLS<-plsr(formPLS, data=df, scale=TRUE, valdiation="CV")
-
-
-#modPLS<-plsr(Y~., data=df, scale=TRUE, valdiation="CV")
-
-summary(modPLS)
-
-validationplot(modPLS,val.type="MSEP")
-
-
-plot(modPLS, plottype = "scores")
-
-plsDF<-data.frame(modPLS)
-
-PLSdf<-data.frame(modPLS$scores)
-
-  
-pal = colorRampPalette(c("blue", "red"))
-
-highlow<-ifelse(Y>median(Y),1,0)
-
-plot(modPLS$scores, pch=19, col=pal(Y)) 
-
-
-image(1, modPLS$scores, t(seq_along(modPLS$scores)), col=pal, axes=FALSE)
-axis(4)
-
-ggplot(modPLS, aes(scores))
-
-modPLS$ncomp
-
-pls.MSE<-mean((test$price - predict(modPLS, test,12)) ^ 2)
-
-summary(modPLS)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
