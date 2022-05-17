@@ -1,4 +1,4 @@
-#early version code used to generate bulk heatmaps !!!OUT OF DATE!!!
+#code used to generate bulk heatmaps (fig 5)
 
 
 library(ggplot2)
@@ -8,10 +8,6 @@ library(forcats)
 library(pheatmap)
 library(RColorBrewer)
 library(viridis)
-
-
-#bulk<-select(Var.df, c.9MonocyteDCNeutrophilTHBS1, c.6AdventitialFibroblastCOMP, c.7MacrophageCCL2, c.12MastCellCCL2, c.13SmoothMuscleCellCCL2, c.8DermalSheathandPapillaeIGFBP3)
-
 
 
 bulk<-read.csv("bulk.csv")[,-1]
@@ -128,6 +124,7 @@ dfPlotT<-t(dfPlot)
 myBreaks <- c(seq(-.7, 0, length.out=ceiling(paletteLength/2) + 1), 
               seq(0, .7, length.out=floor(paletteLength/2)+2)[-1])
 
+#mess around with sizing
 p<-pheatmap(dfPlotT,cluster_rows=F,cluster_cols = F, color = myColor,breaks=myBreaks,cellwidth = 150/length(bulk),cellheight = 200/length(variables),fontsize_row = 12, fontsize_col = 12)
 
 p<-pheatmap(dfPlotT,cluster_rows=F,cluster_cols = F, color = myColor,breaks=myBreaks)
