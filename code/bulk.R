@@ -1,3 +1,6 @@
+#early version code used to generate bulk heatmaps !!!OUT OF DATE!!!
+
+
 library(ggplot2)
 library(dplyr)
 library(reshape)
