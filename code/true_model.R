@@ -1,3 +1,7 @@
+#LASSO used to find "TRUE" features
+#make sure to change seeds for reproducibility
+#also includes PLSDA
+
 library(glmnet)
 library(pROC)
 library(dplyr)
@@ -103,50 +107,13 @@ ggsave("plsDEG.pdf",device = "pdf")
 
 
 
-modPLS<-plsr(formPLS, data=Var.df, scale=TRUE, valdiation="CV")
-
-scoreplot(modPLS, pch=19, col=pal(Y), comps = 1:2) 
-scoreplot(modPLS, pch=19, col=(c("darkred","darkblue")), comps = 1:2) 
-loadingplot(modPLS, pch=19, col=(c("darkred","darkblue")), comps = 1:2)
-summary(modPLS)
-
-
-
-#PLS Full
-
-
-scl.DEG.var<-as.data.frame(scale(DEG.Var.df))
-modPLSFull<-plsr(form_cheat, data=scl.DEG.var, scale=TRUE, valdiation="CV")
-
-pal = colorRampPalette(c("white","darkblue"))
-pal = scale_color_viridis(discrete = TRUE, option = "D")
-
-scoreplot(modPLS, pch=19, col=pal(Y), comps = 1:2)
-scoreplot(modPLSFull, pch=19, col=(c("lightblue","darkblue")), comps = 1:2)
-
-hist(Y,col = c('pink','violet','purple'))
 
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#generate table of "true" variables
 
 df.cheat<-as.data.frame(df[,variables])
 df.cheat$Y<-Y
