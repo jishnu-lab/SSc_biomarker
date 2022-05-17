@@ -1,3 +1,6 @@
+#BEST MODEL
+#HIGH VARIANCE
+
 library(glmnet)
 library(pROC)
 library(dplyr)
