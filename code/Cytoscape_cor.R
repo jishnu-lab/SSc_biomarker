@@ -1,3 +1,6 @@
+##code used to generate csvs for cytoscape
+
+
 library(dplyr)
 library(psych)
 
@@ -40,7 +43,7 @@ df<-merge(corDF2, l, by = 'V2')
 
 
 
-
+#simplify cluster names
 
 df$V1<-gsub("0TerminalKeratinocyte","1.",df$V1)
 df$V1<-gsub("1BasalKeratinocyte","2.",df$V1)
