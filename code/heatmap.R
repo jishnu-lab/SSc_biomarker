@@ -1,3 +1,5 @@
+#create heatmaps for figs 3,4
+
 library(ggplot2)
 library(dplyr)
 library(reshape)
@@ -123,65 +125,3 @@ save_pheatmap_pdf(p, "HK.pdf")
 
 
 
-
-
-
-
-
-
-save_pheatmap_png <- function(x, filename, width=1500, height=700, res = 300) {
-  png(filename, width = width, height = height, res = res)
-  grid::grid.newpage()
-  grid::grid.draw(x$gtable)
-  dev.off()
-}
-
-save_pheatmap_png(p, "HDEG.png")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-dfM<-as.matrix(scale(df))
-
-# Transform the matrix in long format
-dfPlot <- melt(dfM)
-colnames(dfPlot) <- c("ID", "y", "value")
-dfPlot$ID<-ID
-
-
-dfPlot<-dfPlot[dfPlot$y %in% variables,]
-
-
-
-corList<-matrix(nrow = length(variables), ncol=2)
-for (i in 1:length(variables)){
-  corList[i,1]<-variables[i]
-  corList[i,2]<-cor(df[,colnames(df)%in% variables[i]],Y)
-}
-corList<-as.data.frame(corList)
-ORDER<-corList$V1[order(corList$V2, decreasing = F)]
-
-
-dfPlot$ID <- factor(dfPlot$ID, levels = dfPlot$ID[order(Y)])
-
-dfPlot$y <- factor(dfPlot$y, levels = ORDER)
-dfPlotm<-as.matrix(dfPlot)
-
-pheatmap(dfPlot)
-
-ggplot(dfPlot,aes(x = ID, y = y, fill = value))+geom_tile()
