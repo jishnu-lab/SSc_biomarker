@@ -1,6 +1,8 @@
 #BEST MODEL
 #HIGH VARIANCE
 
+
+## load in packages
 library(glmnet)
 library(pROC)
 library(dplyr)
@@ -13,29 +15,33 @@ library(foreach)
 library(doParallel)
 library(RColorBrewer)
 
+#set up parallel computing
 registerDoParallel()
 getDoParWorkers()
 
 system.time( foreach(i=1:10000) %dopar% sum(tanh(1:i)) )
 
+
+
+#load in csv with gene expression data
 Var.df<-read.csv("varDF.csv")[,-1]
 df<-Var.df %>% select(-contains("c.14"))
-#df<-Var.df %>% select(contains("IGFBP5")|contains("c.14"))
 
+#load in mrss data
 resp<-read.csv("SkinScore_LafyatisAndBaselineTofa_MRSS.csv",header=T)
 Y <- resp[,2]
 df$Y<-Y
 set.seed(101)
 
-
-#df$test<-df$c.0TerminalKeratinocyteLOR+6
-#remove redundant
-
+#remove highly correlated genes to eliminate repeated info
 cormat<-cor(df[,1:length(df)-1])
 
 highlyCorrelated <- findCorrelation(cormat, cutoff=0.9)
 
 df<-df[,-highlyCorrelated]
+
+
+
 
 #FOLDS
 k <- 24
@@ -81,10 +87,7 @@ for (i in 1:10){
     #NOTE TRUE Y
     trueY<-c(trueY,testY)
     
-    
-    #train<-train[,abs(cor(train[,colnames(train)],train$Y,method = "spearman"))>.1]
-    #stable_Var<-stable_Var[cor(train[,stable_Var],trainY, method = "spearman")>.1]
-    
+
     
     {
       #INNER VALIDATION
@@ -132,12 +135,10 @@ for (i in 1:10){
       
       print(i)
       print(NoF)
-      #print(freq)
-      
+
       
       stable_Var<-stable_Var[abs(cor(train[,stable_Var],train$Y, method = "spearman"))>.1]
-      #train<-train[,abs(cor(train[,colnames(train)],train$Y,method = "spearman"))>.1]
-      
+
       
       #RANDOM FOREST
       
